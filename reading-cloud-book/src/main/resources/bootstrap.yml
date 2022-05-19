@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: light-reading-cloud-book
+
+  cloud:
+    nacos:
+      config:
+        server-addr: localhost:8848
+        file-extension: yml
+        refresh: true
+        shared-detaids: light-reading-cloud-book.yml
+        namespace: 99ddd08e-6139-46b6-bdc4-c65e04fa3c47
+
+      discovery:
+        server-addr: localhost:8848
+        namespace: 99ddd08e-6139-46b6-bdc4-c65e04fa3c47
+
+
