@@ -4,6 +4,6 @@
 
 ## 项目整体架构：
 
-![](assets\framework.png)
+![](assets/framework.png)
 
 项目正在完善中...
