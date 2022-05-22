@@ -2,9 +2,10 @@ package com.cqupt.readingcloud.book.dao;
 
 import com.cqupt.readingcloud.common.pojo.book.DataDictionary;
 import org.apache.ibatis.annotations.Param;
-
+import org.springframework.stereotype.Repository;
 import java.util.List;
 
+@Repository
 public interface DataDictionaryMapper {
     DataDictionary selectById(Integer id);
 

@@ -3,9 +3,11 @@ package com.cqupt.readingcloud.book.dao;
 import com.cqupt.readingcloud.common.pojo.book.BookChapter;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface BookChapterMapper {
     //按ID查
     BookChapter selectById(@Param("id") Integer id);

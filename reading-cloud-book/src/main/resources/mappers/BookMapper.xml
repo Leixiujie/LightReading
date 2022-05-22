@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.zealon.readingcloud.book.dao.BookMapper">
+<mapper namespace="com.cqupt.readingcloud.book.dao.BookMapper">
 
-    <resultMap id="BaseResultMap" type="cn.zealon.readingcloud.common.pojo.book.Book">
+    <resultMap id="BaseResultMap" type="com.cqupt.readingcloud.common.pojo.book.Book">
         <id column="id" jdbcType="INTEGER" property="id" />
         <result column="author_id" jdbcType="INTEGER" property="authorId" />
         <result column="dic_category" jdbcType="INTEGER" property="dicCategory" />

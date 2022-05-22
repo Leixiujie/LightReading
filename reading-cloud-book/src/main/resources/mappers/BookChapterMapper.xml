@@ -13,7 +13,7 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     </resultMap>
 
-    <resultMap id="BaseListResultMap" type="cn.zealon.readingcloud.common.pojo.book.BookChapter">
+    <resultMap id="BaseListResultMap" type="com.cqupt.readingcloud.common.pojo.book.BookChapter">
         <id column="id" jdbcType="INTEGER" property="id" />
         <result column="book_id" jdbcType="INTEGER" property="bookId" />
         <result column="name" jdbcType="VARCHAR" property="name" />
