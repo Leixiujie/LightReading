@@ -60,7 +60,7 @@ public class BookChapterServiceImpl implements BookChapterService {
         List<BookChapterListVO> chapterVOs = this.redisService.getCacheForList(key, BookChapter.class);
         //如果redis中没有，查询mysql数据库，并上传redis
         if(chapterVOs == null || chapterVOs.size() == 0){
-            List<BookChapter> chapters = this.bookChapterMapper.findPageWithResult(book.getId());
+            List<BookChapter> chapters = this.bookChapterMapper.findPageWithResult(Integer.parseInt(bookId));
             if(chapters.size() > 0){
                 chapterVOs = new ArrayList<>();
                 for(int i=0; i<chapters.size(); i++){
@@ -88,13 +88,15 @@ public class BookChapterServiceImpl implements BookChapterService {
         String key = RedisBookKey.getBookChapterKey(bookId);
         String field = chapterId.toString();
         chapter = this.redisService.getHashVal(key, field, BookChapter.class);
+
         if(chapter == null){
             chapter = this.bookChapterMapper.selectById(chapterId);
-            if(chapter != null){
-                this.redisService.setHashValExpire(key, field, chapter, RedisExpire.HOUR);
-            }
+            if(chapter != null) this.redisService.setHashValExpire(key, field, chapter, RedisExpire.HOUR);
+            else this.redisService.setHashValExpire(key, field, chapter, 10L);
         }
-        return ResultUtil.success(chapter);
+
+        if(chapter != null) return ResultUtil.success(chapter);
+        else return ResultUtil.notFound(chapter);
     }
 
     /**
@@ -108,7 +110,9 @@ public class BookChapterServiceImpl implements BookChapterService {
      */
     @Override
     public Result<BookChapterReadVO> readChapter(String bookId, Integer chapterId) {
+//        System.out.println(bookId);
         Book book = (Book) this.bookService.getBookById(bookId).getData();
+//        System.out.println(book);
         if(book == null) return ResultUtil.notFound().buildMessage("该书本不存在");
 
         String field = chapterId.toString();
@@ -116,12 +120,13 @@ public class BookChapterServiceImpl implements BookChapterService {
         if(chapterId == 0) field = "first";
         else if(chapterId == -1) field = "last";
 
-        BookPreviousAndNextChapterNode chapterNode = this.getChapterNodeData(book.getId(), field);
+        BookPreviousAndNextChapterNode chapterNode = this.getChapterNodeData(bookId, field);
 
         if(chapterNode == null){
             //找不到的查首章节
             field = "first";
-            chapterNode = this.getChapterNodeData(book.getId(), field);
+            chapterNode = this.getChapterNodeData(bookId, field);
+//            System.out.println(chapterNode);
             if(chapterNode == null) return ResultUtil.notFound().buildMessage("本书还没有任何章节内容");
         }
 
@@ -137,6 +142,7 @@ public class BookChapterServiceImpl implements BookChapterService {
         if(chapterNode.getNext() != null)
             next = new BookChapterVO(chapterNode.getNext().getId(), chapterNode.getNext().getName(), "");
 
+//        System.out.println(current);
         BookChapterReadVO result = new BookChapterReadVO();
         result.setCurrent(current);
         result.setPre(pre);
@@ -156,16 +162,18 @@ public class BookChapterServiceImpl implements BookChapterService {
      * 数据库查找到了就生成一个章节链表并存入redis，并返回数据
      * 数据库没有查到就返回空
      */
-    private BookPreviousAndNextChapterNode getChapterNodeData(final Integer bookId, final String field){
+    private BookPreviousAndNextChapterNode getChapterNodeData(final String bookId, final String field){
         //查询book前后章节节点
-        String key = RedisBookKey.getBookChapterNodeKey(bookId);
+        String key = RedisBookKey.getBookChapterNodeKey(Integer.parseInt(bookId));
         BookPreviousAndNextChapterNode chapterNode = this.redisService.getHashObject(key, field, BookPreviousAndNextChapterNode.class);
 
         //如果查到就返回
         if(chapterNode != null) return chapterNode;
 
         //否则就去数据库查
-        List<BookChapter> chaptersList = this.bookChapterMapper.findPageWithResult(bookId);
+        List<BookChapter> chaptersList = this.bookChapterMapper.findPageWithResult(Integer.parseInt(bookId));
+
+//        LOGGER.debug(chaptersList.toString());
 
         //为空就表示没了
         if(chaptersList.size() == 0) return null;

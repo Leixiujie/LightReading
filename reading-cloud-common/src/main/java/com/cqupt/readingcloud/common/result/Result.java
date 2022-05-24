@@ -1,11 +1,15 @@
 package com.cqupt.readingcloud.common.result;
 
+import lombok.ToString;
+
 import java.io.Serializable;
 
 /**
  * 操作结果集封装
  * @author zealon
  */
+
+@ToString
 public class Result<T>  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
