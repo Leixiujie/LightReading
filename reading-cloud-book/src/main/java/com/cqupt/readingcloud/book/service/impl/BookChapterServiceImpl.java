@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -101,13 +102,15 @@ public class BookChapterServiceImpl implements BookChapterService {
      * @param bookId
      * @param chapterId
      * @return
+     * 根据bookId获取书本章节信息，如果没有，则返回“没有内容”，有则继续
+     * 根据章节信息查询章节内容,并返回上下章节的信息(不包含内容)
+     *
      */
     @Override
     public Result<BookChapterReadVO> readChapter(String bookId, Integer chapterId) {
         Book book = (Book) this.bookService.getBookById(bookId).getData();
         if(book == null) return ResultUtil.notFound().buildMessage("该书本不存在");
 
-        BookChapterReadVO bookChapterReadVO = new BookChapterReadVO();
         String field = chapterId.toString();
 
         if(chapterId == 0) field = "first";
@@ -115,10 +118,109 @@ public class BookChapterServiceImpl implements BookChapterService {
 
         BookPreviousAndNextChapterNode chapterNode = this.getChapterNodeData(book.getId(), field);
 
-        return null;
+        if(chapterNode == null){
+            //找不到的查首章节
+            field = "first";
+            chapterNode = this.getChapterNodeData(book.getId(), field);
+            if(chapterNode == null) return ResultUtil.notFound().buildMessage("本书还没有任何章节内容");
+        }
+
+        String content = this.getChapterContent(bookId, chapterNode.getId());
+        BookChapterVO current = new BookChapterVO(chapterNode.getId(), chapterNode.getName(), content);
+
+        //上一章、下一章
+        BookChapterVO pre = null;
+        BookChapterVO next = null;
+        if(chapterNode.getPre() != null)
+            pre = new BookChapterVO(chapterNode.getPre().getId(), chapterNode.getPre().getName(), "");
+
+        if(chapterNode.getNext() != null)
+            next = new BookChapterVO(chapterNode.getNext().getId(), chapterNode.getNext().getName(), "");
+
+        BookChapterReadVO result = new BookChapterReadVO();
+        result.setCurrent(current);
+        result.setPre(pre);
+        result.setNext(next);
+
+        return ResultUtil.success(result);
+
     }
 
+    /**
+     * 获取前后章节节点数据链表
+     * @param bookId
+     * @param field
+     * @return
+     * 先通过redis查询章节内容是否存在，查到就返回，
+     * 没有查到就去数据库查找，
+     * 数据库查找到了就生成一个章节链表并存入redis，并返回数据
+     * 数据库没有查到就返回空
+     */
     private BookPreviousAndNextChapterNode getChapterNodeData(final Integer bookId, final String field){
-        return null;
+        //查询book前后章节节点
+        String key = RedisBookKey.getBookChapterNodeKey(bookId);
+        BookPreviousAndNextChapterNode chapterNode = this.redisService.getHashObject(key, field, BookPreviousAndNextChapterNode.class);
+
+        //如果查到就返回
+        if(chapterNode != null) return chapterNode;
+
+        //否则就去数据库查
+        List<BookChapter> chaptersList = this.bookChapterMapper.findPageWithResult(bookId);
+
+        //为空就表示没了
+        if(chaptersList.size() == 0) return null;
+
+        HashMap<String, BookPreviousAndNextChapterNode> map = new HashMap<>();
+
+        //获取上一个节点数据
+        BookPreviousAndNextChapterNode pre = null;
+        try{
+            for(int i=1; i<=chaptersList.size(); i++){
+                BookChapter chapter = chaptersList.get(i-1);
+                //获取下一章节内容
+                if(chapter.getLockStatus()){
+                    if(i >= chaptersList.size()) break;
+                    chapter = chaptersList.get(i);
+                    ++i;
+                }
+
+                //获取当前章节节点数据
+                BookPreviousAndNextChapterNode curr =
+                        new BookPreviousAndNextChapterNode(chapter.getId(), chapter.getName());
+                if(pre != null){
+                    curr.setPre(new BookPreviousAndNextChapterNode(pre));
+                    pre.setNext(new BookPreviousAndNextChapterNode(curr));
+                    map.put(pre.getId()+"", pre);
+                }
+
+                if(i == 2) map.put("first", pre);
+                //排除只有1个章节的错误情况；同时，如果直接设置1没有后继节点
+                else if(i == 1) map.put("first", curr);
+
+                //设置中间章节信息
+                map.put(curr.getId()+"", curr);
+                pre = curr;
+            }
+            map.put("last", pre);
+            this.redisService.setHashValsExpire(key, map, RedisExpire.HOUR);
+        }catch (Exception e){
+            LOGGER.error("生成章节节点数据异常：{}", e);
+        }
+        return map.get(field);
+    }
+
+    /**
+     * 内容查询模块
+     * @param bookId
+     * @param chapterId
+     * @return
+     * 根据章节和bookId来查询内容
+     */
+    private String getChapterContent(String bookId, Integer chapterId){
+        String content = "";
+        BookChapter chapter = this.getChapterById(bookId, chapterId).getData();
+        if(chapter != null) content = chapter.getContent();
+
+        return content;
     }
 }
