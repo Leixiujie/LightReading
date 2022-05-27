@@ -1,13 +1,13 @@
-package com.cqupt.readingcloudbookfeignclient;
+package com.cqupt.readingcloudaccountfeignclient;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ReadingCloudBookFeignClientApplication {
+public class ReadingCloudAccountFeignClientApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ReadingCloudBookFeignClientApplication.class, args);
+        SpringApplication.run(ReadingCloudAccountFeignClientApplication.class, args);
     }
 
 }

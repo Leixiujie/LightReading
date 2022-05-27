@@ -17,6 +17,7 @@
     <modules>
         <module>reading-cloud-common</module>
         <module>reading-cloud-book</module>
+        <module>reading-cloud-feign-client</module>
 <!--        <module>reading-cloud-account</module>-->
     </modules>
 
@@ -26,7 +27,7 @@
         <swagger.version>2.6.1</swagger.version>
         <pagehelper.version>4.2.1</pagehelper.version>
         <druid.version>1.1.10</druid.version>
-        <lombok.version>1.18.10</lombok.version>
+        <lombok.version>1.18.20</lombok.version>
         <fastjson.version>1.2.62</fastjson.version>
         <mybatis.version>3.4.6</mybatis.version>
     </properties>
