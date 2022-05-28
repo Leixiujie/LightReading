@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: light-reading-cloud-account
+
+  cloud:
+    nacos:
+      #配置中心
+      config:
+        server-addr: localhost:8848
+        file-extension: yml
+        refresh: true
+        shared-dataids: light-reading-cloud-account.yml
+        namespace:
+
+      #注册中心
+      discovery:
+        server-addr: localhost:8848
+        namespace:
