@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.zealon.readingcloud.account.dao.UserMapper">
+<mapper namespace="com.cqupt.readingcloud.account.dao.UserMapper">
 
-    <resultMap id="BaseResultMap" type="cn.zealon.readingcloud.common.pojo.account.User">
+    <resultMap id="BaseResultMap" type="com.cqupt.readingcloud.common.pojo.account.User">
         <id column="id" jdbcType="INTEGER" property="id" />
         <result column="uuid" jdbcType="VARCHAR" property="uuid" />
         <result column="user_pwd" jdbcType="VARCHAR" property="userPwd" />
@@ -19,7 +19,7 @@
       update_time
     </sql>
 
-    <insert id="insert" parameterType="cn.zealon.readingcloud.common.pojo.account.User">
+    <insert id="insert" parameterType="com.cqupt.readingcloud.common.pojo.account.User">
       insert into user (id, uuid, user_pwd,
         login_name, nick_name, phone_number,
         head_img_url, create_time, update_time
@@ -30,7 +30,7 @@
         )
     </insert>
 
-    <update id="updateByLoginName" parameterType="cn.zealon.readingcloud.common.pojo.account.User">
+    <update id="updateByLoginName" parameterType="com.cqupt.readingcloud.common.pojo.account.User">
         update user
         <set>
             <if test="userPwd != null">

@@ -97,7 +97,7 @@ public class UserLikeSeeServiceImpl implements UserLikeSeeService {
     public Result getUserLikeBookList(Integer userId, Integer page, Integer limit) {
         try{
             PageHelper.startPage(page, limit);
-            Page<UserLikeSee> pageWithResult = (Page<UserLikeSee>) this.likeSeeMapper.findPageWIthResult(userId);
+            Page<UserLikeSee> pageWithResult = (Page<UserLikeSee>) this.likeSeeMapper.findPageWithResult(userId);
             List<SimpleBookVO> books = new ArrayList<>();
             for(UserLikeSee likeSee: pageWithResult){
                 SimpleBookVO vo = new SimpleBookVO();
@@ -110,7 +110,7 @@ public class UserLikeSeeServiceImpl implements UserLikeSeeService {
             return ResultUtil.success(books);
         }
         catch (Exception e){
-            LOGGER.error("获取用户[{}]喜欢书单异常:{}", userId, e);
+            LOGGER.error("获取用户[{}]喜欢书单异常:{}", userId, e.toString());
             return ResultUtil.fail();
         }
     }
@@ -122,7 +122,7 @@ public class UserLikeSeeServiceImpl implements UserLikeSeeService {
             result = this.likeSeeMapper.selectCountByUserAndBookId(userId, bookId);
         }
         catch (Exception e){
-            LOGGER.error("查询喜欢书数异常:{}", e);
+            LOGGER.error("查询喜欢书数异常:{}", e.toString());
         }
         return ResultUtil.success(result);
     }

@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class UserBookshelfServiceImpl implements UserBookShelfService {
 
     //线程池
     @Autowired
+    @Qualifier("userBookShelfQueueThreadPool")
     private ExecutorService userBookshelfQueueThreadPool;
 
     //feign接口
@@ -92,10 +94,12 @@ public class UserBookshelfServiceImpl implements UserBookShelfService {
         int result = 0;
         try{
             result = this.bookshelfMapper.selectCountByUserAndBookId(userId, bookId);
+//            System.out.println(">>> result = " + result);
         }
         catch (Exception e){
             LOGGER.error("查询图书{}是否在书架里异常:{}", userId, e);
         }
+
         return ResultUtil.success(result);
     }
 }

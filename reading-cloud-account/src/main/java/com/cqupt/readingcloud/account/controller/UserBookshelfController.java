@@ -3,15 +3,16 @@ package com.cqupt.readingcloud.account.controller;
 import com.cqupt.readingcloud.common.result.Result;
 import com.cqupt.readingcloud.account.bo.UserBookshelfBO;
 import com.cqupt.readingcloud.account.service.UserBookShelfService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.*;
 
+@Api
+@RestController
+@RequestMapping("account/bookshelf")
 public class UserBookshelfController {
 
     @Autowired

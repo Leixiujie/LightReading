@@ -31,7 +31,7 @@ public class BookshelfThreadPoolConfig {
                 this.getMaximumPoolSize(), this.getKeepAliveTime(), TimeUnit.MILLISECONDS,
                 new ArrayBlockingQueue<>(this.getQueueCapacity()),
                 namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
-
+//        System.out.println(">>>>>>>>>>>>>>>>>线程池初始化"+ pool + "<<<<<<<<<<<<<<<<<<");
         return pool;
     }
 

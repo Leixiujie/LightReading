@@ -4,6 +4,7 @@ package com.cqupt.readingcloud.account.common.config;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.*;
@@ -17,6 +18,7 @@ public class ThreadPoolConfig {
     private Long keepAliveTime;
     private int queueCapacity;
 
+    @Bean(value = "commonQueueThreadPool")
     public ExecutorService buildCommonQueueThreadPool(){
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
                 .setNameFormat("common-queue-thread-%d").build();
@@ -26,6 +28,7 @@ public class ThreadPoolConfig {
                 this.getMaximumPoolSize(), this.getKeepAliveTime(),
                 TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(this.getQueueCapacity()),
                 namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
+//        System.out.println(">>>>>>>>>>>>>>>>>ThreadPoolConfig线程池初始化"+ pool + "<<<<<<<<<<<<<<<<<<");
         return pool;
     }
 

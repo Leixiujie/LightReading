@@ -9,7 +9,7 @@ spring:
         server-addr: localhost:8848
         file-extension: yml
         refresh: true
-        shared-dataids: light-reading-cloud-account.yml
+        shared-dataids: reading-cloud-account.yml
         namespace: 99ddd08e-6139-46b6-bdc4-c65e04fa3c47
 
       #注册中心

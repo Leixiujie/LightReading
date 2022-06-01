@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.zealon.readingcloud.account.dao.UserLikeSeeMapper">
+<mapper namespace="com.cqupt.readingcloud.account.dao.UserLikeSeeMapper">
 
-    <resultMap id="BaseResultMap" type="cn.zealon.readingcloud.common.pojo.account.UserLikeSee">
+    <resultMap id="BaseResultMap" type="com.cqupt.readingcloud.common.pojo.account.UserLikeSee">
         <id column="id" jdbcType="INTEGER" property="id" />
         <result column="user_id" jdbcType="INTEGER" property="userId" />
         <result column="book_id" jdbcType="VARCHAR" property="bookId" />
@@ -18,7 +18,7 @@
       where book_id = #{bookId} and user_id = #{userId}
     </delete>
 
-    <insert id="insert" parameterType="cn.zealon.readingcloud.common.pojo.account.UserLikeSee">
+    <insert id="insert" parameterType="com.cqupt.readingcloud.common.pojo.account.UserLikeSee">
       insert into user_like_see (id, user_id, book_id, create_time)
       values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{bookId,jdbcType=VARCHAR}, now())
     </insert>
